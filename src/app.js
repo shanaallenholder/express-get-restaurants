@@ -26,6 +26,21 @@ app.get("/restaurants/:id", async (req, res) => {
 
 });
 
+app.use(express.json());
+app.use(express.urlencoded());
+
+// Creating a restaurant endpoint
+app.post("/restaurants" , async (req,res) => {
+    const restaurant = await Restaurant.create({
+        name: req.body.name,
+        location: req.body.location,
+        cuisine: req.body.cuisine
+    })
+    // 201 created - success
+    res.status(201).json(restaurant);
+  
+})
+
 
 
 
