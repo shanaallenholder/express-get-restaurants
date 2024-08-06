@@ -27,11 +27,11 @@ app.get("/restaurants/:id", async (req, res) => {
 });
 
 app.use(express.json());
-app.use(express.urlencoded());
 
-// Creating a restaurant endpoint
+
+// Creating a restaurant endpoint with POST and CREATE 
 app.post("/restaurants" , async (req,res) => {
-    const restaurant = await Restaurant.create({
+    const restaurant = await Restaurant.create({ //Async method to create 
         name: req.body.name,
         location: req.body.location,
         cuisine: req.body.cuisine
@@ -39,6 +39,31 @@ app.post("/restaurants" , async (req,res) => {
     // 201 created - success
     res.status(201).json(restaurant);
   
+})
+
+// Updating(replacing) an existing restaurant with a new restaurant in the database based on ID.
+// With a new restaurant in your restaurant database based on ID in the route 
+app.put("/restaurants/:id", async (req,res) => {
+    let restaurant = await Restaurant.findByPk(req.params.id); //async method to find by primary key/id
+
+    if(!restaurant) {
+        res.status(404).json({error: "Restaurant not found"});
+        return;
+    }
+    restaurant = await restaurant.update(req.body);
+    res.json(restaurant);
+})
+
+// Deleting restaurant using endpoints by their id endpoint 
+app.delete("/restaurants/:id" , async (req,res) => {
+    const restaurant = await Restaurant.findByPk(req.params.id); // async method to delete by its id.
+
+    if(!restaurant) { // if the restaurant DOES NOT exist
+        res.status(404).json({error: "Restaurant does not exist"}); //give this error status/message
+        return;
+    }
+    await restaurant.destroy(); // if it does then delete the restaurant
+    res.status(204).send();
 })
 
 
